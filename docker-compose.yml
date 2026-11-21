@@ -1,0 +1,41 @@
+
+services:
+  # Local mock destination server
+  mock-destinations:
+    image: python:3.13-slim
+    container_name: incubrix-mock-destinations
+    working_dir: /app
+    volumes:
+      - ./mock_destinations:/app
+    environment:
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET}
+    command: >
+      sh -c "pip install --no-cache-dir fastapi uvicorn &&
+             uvicorn main:app --host 0.0.0.0 --port 9000"
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+
+  # S3-compatible object storage (Silo)
+  minio:
+    image: docker.io/pgsty/silo:RELEASE.2026-11-12T00-00-00Z
+    container_name: incubrix-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9002:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "silo", "healthcheck", "ready"]
+      interval: 30s
+      timeout: 10s
+      start_period: 2m
+      retries: 3
+
+volumes:
+  minio_data:

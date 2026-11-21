@@ -1,0 +1,22 @@
+[
+    {
+        "platform": "manual",
+        "title": "Batch Test Post 1",
+        "body": "Testing the first batch publishing request.",
+        "dry_run": true
+    },
+    {
+        "platform": "manual",
+        "title": "Batch Test Post 2",
+        "body": "Testing the second batch publishing request.",
+        "dry_run": true
+    },
+    {
+        "platform": "manual",
+        "title": "AI Generated Batch Post",
+        "body": "Testing AI disclosure validation.",
+        "ai_generated": true,
+        "ai_disclosure": false,
+        "dry_run": true
+    }
+]

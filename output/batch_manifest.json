@@ -1,0 +1,44 @@
+{
+    "batch_status": "completed",
+    "created_at": "2026-11-21T15:21:48.208361+00:00",
+    "total_items": 3,
+    "successful": 2,
+    "blocked": 1,
+    "failed": 0,
+    "results": [
+        {
+            "item_number": 1,
+            "platform": "manual",
+            "title": "Batch Test Post 1",
+            "status": "preview",
+            "result": {
+                "status": "preview",
+                "platform": "manual",
+                "message": "Content passed validation"
+            }
+        },
+        {
+            "item_number": 2,
+            "platform": "manual",
+            "title": "Batch Test Post 2",
+            "status": "preview",
+            "result": {
+                "status": "preview",
+                "platform": "manual",
+                "message": "Content passed validation"
+            }
+        },
+        {
+            "item_number": 3,
+            "platform": "manual",
+            "title": "AI Generated Batch Post",
+            "status": "blocked",
+            "result": {
+                "status": "blocked",
+                "errors": [
+                    "AI disclosure required"
+                ]
+            }
+        }
+    ]
+}
