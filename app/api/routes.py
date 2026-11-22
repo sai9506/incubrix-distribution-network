@@ -51,10 +51,26 @@ from app.storage.object_storage import storage
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 router = APIRouter(
     prefix="/api/v1",
     tags=["Distribution"]
 )
+
+
+# --------------------------------------------------
+# STORAGE AVAILABILITY
+# --------------------------------------------------
+
+def require_storage():
+    if not storage.enabled:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "code": "STORAGE_NOT_CONFIGURED",
+                "message": "Object storage is not configured."
+            }
+        )
 
 
 # --------------------------------------------------
@@ -178,8 +194,6 @@ class ContentRequest(BaseModel):
 
 def generate_request_hash(request_data: dict) -> str:
 
-    # Normalize dictionary input using the request model.
-    # This ensures default fields are included consistently.
     normalized_data = ContentRequest(
         **request_data
     ).model_dump()
@@ -533,6 +547,8 @@ def upload_storage_file(
     file: UploadFile = File(...)
 ):
 
+    require_storage()
+
     if not file.filename:
         raise_api_error(
             400,
@@ -603,6 +619,8 @@ def upload_storage_file(
 
 @router.get("/storage/files")
 def list_storage_files():
+
+    require_storage()
 
     try:
 
