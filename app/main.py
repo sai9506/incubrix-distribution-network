@@ -1,5 +1,6 @@
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -20,15 +21,12 @@ app = FastAPI(
 
 
 # --------------------------------------------------
-# HOME
+# HOME - REDIRECT TO SWAGGER UI
 # --------------------------------------------------
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def home():
-    return {
-        "message": "Welcome to IncuBrix Distribution Service",
-        "status": "running"
-    }
+    return RedirectResponse(url="/docs")
 
 
 # --------------------------------------------------
@@ -48,7 +46,6 @@ def health():
 
 @app.get("/ready")
 def ready():
-
     try:
         with engine.connect() as connection:
             connection.execute(text("SELECT 1"))
@@ -59,7 +56,6 @@ def ready():
         }
 
     except SQLAlchemyError:
-
         raise HTTPException(
             status_code=503,
             detail={
