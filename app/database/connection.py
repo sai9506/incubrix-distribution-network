@@ -4,19 +4,19 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# Load local environment variables
 load_dotenv()
 
-# Read DATABASE_URL from environment
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
-    raise ValueError(
-        "DATABASE_URL environment variable is missing. "
-        "Configure it in Railway Variables or your local .env file."
+    raise ValueError("DATABASE_URL environment variable is missing.")
+
+# Use PyMySQL instead of the default MySQLdb driver
+if DATABASE_URL.startswith("mysql://"):
+    DATABASE_URL = DATABASE_URL.replace(
+        "mysql://", "mysql+pymysql://", 1
     )
 
-# Create database engine
 engine = create_engine(
     DATABASE_URL,
     echo=False,
@@ -24,7 +24,6 @@ engine = create_engine(
     pool_recycle=3600
 )
 
-# Create database session
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
@@ -34,7 +33,6 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 
-# FastAPI database dependency
 def get_db():
     db = SessionLocal()
     try:
